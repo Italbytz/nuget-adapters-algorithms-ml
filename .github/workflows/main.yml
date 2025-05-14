@@ -1,0 +1,16 @@
+name: CI
+on: 
+  push:
+  schedule:
+    - cron:  '0 1 * * *'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET SDK 
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+      - run: cd Italbytz.Adapters.Algorithms.ML/Italbytz.Adapters.Algorithms.ML.Tests && dotnet test
+

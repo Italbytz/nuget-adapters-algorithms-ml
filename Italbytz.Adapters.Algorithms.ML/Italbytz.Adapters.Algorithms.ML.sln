@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Italbytz.Adapters.Algorithms.ML", "Italbytz.Adapters.Algorithms.ML\Italbytz.Adapters.Algorithms.ML.csproj", "{C597D1E9-3EE0-49EE-8CEC-44C54B746340}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Italbytz.Adapters.Algorithms.ML.Tests", "Italbytz.Adapters.Algorithms.ML.Tests\Italbytz.Adapters.Algorithms.ML.Tests.csproj", "{222FCF6C-CD6B-40EC-B319-E2CE24A85E85}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C597D1E9-3EE0-49EE-8CEC-44C54B746340}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C597D1E9-3EE0-49EE-8CEC-44C54B746340}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C597D1E9-3EE0-49EE-8CEC-44C54B746340}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C597D1E9-3EE0-49EE-8CEC-44C54B746340}.Release|Any CPU.Build.0 = Release|Any CPU
+		{222FCF6C-CD6B-40EC-B319-E2CE24A85E85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{222FCF6C-CD6B-40EC-B319-E2CE24A85E85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{222FCF6C-CD6B-40EC-B319-E2CE24A85E85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{222FCF6C-CD6B-40EC-B319-E2CE24A85E85}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

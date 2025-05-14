@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <PackageVersion>9.0.0</PackageVersion>
+        <Authors>Robin Nunkesser</Authors>
+        <PackageProjectUrl>https://github.com/Italbytz/nuget-adapters-algorithms-ml</PackageProjectUrl>
+        <Description>Some algorithm adapters to use with Ports and Adapters.</Description>
+        <PackOnBuild>true</PackOnBuild>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>introduction.md</PackageReadmeFile>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+        <RepositoryUrl>https://github.com/Italbytz/nuget-adapters-algorithms-ml</RepositoryUrl>
+        <LangVersion>12</LangVersion>
+        <PackRelease>true</PackRelease>
+        <IncludeSource>true</IncludeSource>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>Italbytz.ML</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="../../docfx/docs/introduction.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Italbytz.Adapters.Algorithms.AI" Version="9.6.0" />
+    </ItemGroup>
+</Project>
