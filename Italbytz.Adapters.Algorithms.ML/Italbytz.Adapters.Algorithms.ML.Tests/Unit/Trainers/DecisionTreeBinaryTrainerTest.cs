@@ -22,7 +22,7 @@ public class DecisionTreeBinaryTrainerTest
     {
         var mlContext = new MLContext();
         var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-            "Data", "restaurant_categories.csv");
+            "Data/Restaurant", "restaurant_categories.csv");
         _data = mlContext.Data.LoadFromTextFile<RestaurantModelInput>(
             path,
             ',', true);

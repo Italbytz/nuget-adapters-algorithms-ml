@@ -9,10 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2025.1.0-eap1" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2025.1.0-eap1"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
         <PackageReference Include="MSTest" Version="3.8.3"/>
-        <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.8.3"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -20,17 +20,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Italbytz.Adapters.Algorithms.ML\Italbytz.Adapters.Algorithms.ML.csproj" />
+        <ProjectReference Include="..\Italbytz.Adapters.Algorithms.ML\Italbytz.Adapters.Algorithms.ML.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Unit\" />
+        <Folder Include="Unit\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Data\restaurant_categories.csv">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Update="Data\Restaurant\restaurant_categories.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
