@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.ML;
+using Microsoft.ML.Data;
 using Microsoft.ML.Transforms;
 
 namespace Italbytz.ML.Trainers;
@@ -12,12 +13,20 @@ public class
 {
     protected override void PrepareForFit(IDataView input)
     {
-        var dataExcerpt = input.GetDataExcerpt();
+        /*var dataExcerpt = input.GetDataExcerpt();
         var parameters = MathNet.Numerics.Fit.MultiDim(
             dataExcerpt.Features.ToArray()
                 .Select(e => e.Select(f => (double)f).ToArray()).ToArray(),
             dataExcerpt.Labels.ToArray().Select(e => (double)e).ToArray(),
-            true);
+            true);*/
+        var features = input
+            .GetColumn<float[]>(DefaultColumnNames.Features)
+            .ToList();
+        var labels = input
+            .GetColumn<float>(DefaultColumnNames.Label)
+            .ToList();
+        /*var parameters = MathNet.Numerics.Fit.MultiDim(features.ToArray(),
+            labels.ToArray(), true);*/
     }
 
     protected override

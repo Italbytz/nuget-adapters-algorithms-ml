@@ -20,7 +20,7 @@ public class LeastSquaresTrainerTest
                 "Data/TaxiFare", "taxi-fare-train.csv"),
             ',', true);
         var trainer =
-            new DecisionTreeMulticlassTrainer<TernaryClassificationOutput>();
+            new LeastSquaresTrainer();
         var pipeline = GetTaxiFarePipeline(trainer);
         var model = pipeline.Fit(data);
         var transformedData = model.Transform(data);
@@ -31,7 +31,7 @@ public class LeastSquaresTrainerTest
     }
 
     private EstimatorChain<ITransformer?> GetTaxiFarePipeline(
-        DecisionTreeMulticlassTrainer<TernaryClassificationOutput> trainer)
+        LeastSquaresTrainer trainer)
     {
         var mlContext = ThreadSafeMLContext.LocalMLContext;
         var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(
@@ -47,7 +47,8 @@ public class LeastSquaresTrainerTest
                     @"passenger_count"),
                 new InputOutputColumnPair(@"trip_time_in_secs",
                     @"trip_time_in_secs"),
-                new InputOutputColumnPair(@"trip_distance", @"trip_distance")
+                new InputOutputColumnPair(@"trip_distance", @"trip_distance"),
+                new InputOutputColumnPair(@"Label", @"fare_amount")
             }))
             .Append(mlContext.Transforms.Concatenate(@"Features", @"vendor_id",
                 @"payment_type", @"rate_code", @"passenger_count",
