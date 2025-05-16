@@ -4,9 +4,9 @@ using Microsoft.ML.Transforms;
 
 namespace Italbytz.ML.Trainers;
 
-public class DecisionTreeMulticlassTrainer : DecisionTreeTrainer<
+public class DecisionTreeMulticlassTrainer<TOutput> : DecisionTreeTrainer<
     MulticlassClassificationInput,
-    QuaternaryClassificationOutput>
+    TOutput> where TOutput : class, new()
 {
     private IDataExcerpt? _dataExcerpt;
     private IDataSetSpecification? _spec;
@@ -21,7 +21,7 @@ public class DecisionTreeMulticlassTrainer : DecisionTreeTrainer<
 
     protected override
         CustomMappingEstimator<MulticlassClassificationInput,
-            QuaternaryClassificationOutput> GetCustomMappingEstimator()
+            TOutput> GetCustomMappingEstimator()
     {
         var mlContext = ThreadSafeMLContext.LocalMLContext;
         var mapping = new DecisionTreeMapping(_learner, _dataExcerpt, _spec);
@@ -29,6 +29,6 @@ public class DecisionTreeMulticlassTrainer : DecisionTreeTrainer<
             .CustomMapping(
                 mapping
                     .GetMapping<MulticlassClassificationInput,
-                        QuaternaryClassificationOutput>(), null);
+                        TOutput>(), null);
     }
 }

@@ -1,6 +1,7 @@
+using Italbytz.ML.Tests.Data.CarEvaluation;
+using Italbytz.ML.Tests.Data.NationalPoll;
 using Italbytz.ML.Trainers;
 using JetBrains.Annotations;
-using logicGP.Tests.Data.Real;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 
@@ -10,6 +11,39 @@ namespace Italbytz.ML.Tests.Unit.Trainers;
 [TestSubject(typeof(DecisionTreeBinaryTrainer))]
 public class DecisionTreeMulticlassTrainerTest
 {
+    [TestMethod]
+    public void TestNHPAData()
+    {
+        var mlContext = ThreadSafeMLContext.LocalMLContext;
+        // data preparation
+        var data = mlContext.Data.LoadFromTextFile<NationalPollModelInput>(
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                "Data/NationalPoll", "national_poll_on_healthy_aging_npha.csv"),
+            ',', true);
+        LookupMap<uint>[] lookupData =
+        [
+            new(1),
+            new(2),
+            new(3)
+        ];
+        var lookupIdvMap =
+            mlContext.Data.LoadFromEnumerable(lookupData);
+        // trainer and pipeline
+        var trainer =
+            new DecisionTreeMulticlassTrainer<TernaryClassificationOutput>();
+        var pipeline = GetNHPAPipeline(trainer, lookupIdvMap);
+        var model = pipeline.Fit(data);
+        var transformedData = model.Transform(data);
+        // evaluation
+        var metrics = mlContext.MulticlassClassification
+            .Evaluate(transformedData);
+        Assert.AreEqual(0.93706, metrics.MacroAccuracy, 0.0001);
+        Assert.AreEqual(0.94537, metrics.MicroAccuracy, 0.0001);
+        Assert.AreEqual(1.88657, metrics.LogLoss, 0.0001);
+        Assert.AreEqual(-0.86595, metrics.LogLossReduction, 0.0001);
+    }
+
+
     [TestMethod]
     public void TestCarEvaluationData()
     {
@@ -29,7 +63,8 @@ public class DecisionTreeMulticlassTrainerTest
         var lookupIdvMap =
             mlContext.Data.LoadFromEnumerable(lookupData);
         // trainer and pipeline
-        var trainer = new DecisionTreeMulticlassTrainer();
+        var trainer =
+            new DecisionTreeMulticlassTrainer<QuaternaryClassificationOutput>();
         var pipeline = GetCarEvaluationPipeline(trainer, lookupIdvMap);
         var model = pipeline.Fit(data);
         var transformedData = model.Transform(data);
@@ -40,6 +75,53 @@ public class DecisionTreeMulticlassTrainerTest
         Assert.AreEqual(1.0, metrics.MicroAccuracy, 0.0001);
         Assert.AreEqual(0.0, metrics.LogLoss, 0.0001);
         Assert.AreEqual(1.0, metrics.LogLossReduction, 0.0001);
+    }
+
+    protected EstimatorChain<ITransformer?> GetNHPAPipeline(
+        IEstimator<ITransformer> trainer, IDataView lookupIdvMap)
+    {
+        var mlContext = ThreadSafeMLContext.LocalMLContext;
+        var pipeline = mlContext.Transforms.ReplaceMissingValues(new[]
+            {
+                new InputOutputColumnPair(@"Age", @"Age"),
+                new InputOutputColumnPair(@"Physical_Health",
+                    @"Physical_Health"),
+                new InputOutputColumnPair(@"Mental_Health", @"Mental_Health"),
+                new InputOutputColumnPair(@"Dental_Health", @"Dental_Health"),
+                new InputOutputColumnPair(@"Employment", @"Employment"),
+                new InputOutputColumnPair(@"Stress_Keeps_Patient_from_Sleeping",
+                    @"Stress_Keeps_Patient_from_Sleeping"),
+                new InputOutputColumnPair(
+                    @"Medication_Keeps_Patient_from_Sleeping",
+                    @"Medication_Keeps_Patient_from_Sleeping"),
+                new InputOutputColumnPair(@"Pain_Keeps_Patient_from_Sleeping",
+                    @"Pain_Keeps_Patient_from_Sleeping"),
+                new InputOutputColumnPair(
+                    @"Bathroom_Needs_Keeps_Patient_from_Sleeping",
+                    @"Bathroom_Needs_Keeps_Patient_from_Sleeping"),
+                new InputOutputColumnPair(@"Uknown_Keeps_Patient_from_Sleeping",
+                    @"Uknown_Keeps_Patient_from_Sleeping"),
+                new InputOutputColumnPair(@"Trouble_Sleeping",
+                    @"Trouble_Sleeping"),
+                new InputOutputColumnPair(@"Prescription_Sleep_Medication",
+                    @"Prescription_Sleep_Medication"),
+                new InputOutputColumnPair(@"Race", @"Race"),
+                new InputOutputColumnPair(@"Gender", @"Gender")
+            })
+            .Append(mlContext.Transforms.Concatenate(@"Features", @"Age",
+                @"Physical_Health", @"Mental_Health", @"Dental_Health",
+                @"Employment", @"Stress_Keeps_Patient_from_Sleeping",
+                @"Medication_Keeps_Patient_from_Sleeping",
+                @"Pain_Keeps_Patient_from_Sleeping",
+                @"Bathroom_Needs_Keeps_Patient_from_Sleeping",
+                @"Uknown_Keeps_Patient_from_Sleeping", @"Trouble_Sleeping",
+                @"Prescription_Sleep_Medication", @"Race", @"Gender"))
+            .Append(mlContext.Transforms.Conversion.MapValueToKey(
+                @"Label", @"Number_of_Doctors_Visited",
+                keyData: lookupIdvMap))
+            .Append(trainer);
+
+        return pipeline;
     }
 
     protected EstimatorChain<ITransformer?> GetCarEvaluationPipeline(

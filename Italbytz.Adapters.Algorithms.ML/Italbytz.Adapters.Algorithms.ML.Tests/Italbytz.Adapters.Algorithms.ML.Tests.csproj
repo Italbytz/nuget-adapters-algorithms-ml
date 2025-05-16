@@ -34,6 +34,9 @@
         <None Update="Data\CarEvaluation\car_evaluation_strings.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="Data\NationalPoll\national_poll_on_healthy_aging_npha.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
