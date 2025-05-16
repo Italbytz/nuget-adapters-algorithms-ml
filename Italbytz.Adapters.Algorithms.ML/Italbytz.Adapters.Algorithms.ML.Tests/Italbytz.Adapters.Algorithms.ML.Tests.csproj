@@ -31,6 +31,9 @@
         <None Update="Data\Restaurant\restaurant_categories.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="Data\CarEvaluation\car_evaluation_strings.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

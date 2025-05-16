@@ -21,6 +21,7 @@
         <None Include="../../docfx/docs/introduction.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Italbytz.Adapters.Algorithms.AI" Version="9.6.0" />
+        <PackageReference Include="Italbytz.Adapters.Algorithms.AI" Version="9.6.1"/>
+        <PackageReference Include="Italbytz.ML" Version="9.4.0"/>
     </ItemGroup>
 </Project>

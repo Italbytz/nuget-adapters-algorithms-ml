@@ -3,36 +3,30 @@ using System.Collections.Generic;
 using System.Globalization;
 using Italbytz.AI.Learning;
 using Italbytz.AI.Learning.Framework;
-using Italbytz.AI.Learning.Learners;
 using Microsoft.ML;
 
 namespace Italbytz.ML.Trainers;
 
 /// <inheritdoc />
-public class DecisionTreeBinaryTrainer : IEstimator<ITransformer>
+public class DecisionTreeBinaryTrainer : DecisionTreeTrainer<
+    BinaryClassificationInput,
+    BinaryClassificationOutput>
 {
-    private readonly ILearner _learner;
-
-    public DecisionTreeBinaryTrainer()
-    {
-        _learner = new DecisionTreeLearner();
-    }
-
     /// <inheritdoc />
-    public SchemaShape GetOutputSchema(SchemaShape inputSchema)
+    public override SchemaShape GetOutputSchema(SchemaShape inputSchema)
     {
         var mlContext = ThreadSafeMLContext.LocalMLContext;
         var mapping = new DecisionTreeMapping(_learner, null, null);
         return mlContext.Transforms
             .CustomMapping(
                 mapping
-                    .GetMapping<BinaryClassificationInputSchema,
-                        BinaryClassificationOutputSchema>(), null)
+                    .GetMapping<BinaryClassificationInput,
+                        BinaryClassificationOutput>(), null)
             .GetOutputSchema(inputSchema);
     }
 
     /// <inheritdoc />
-    public ITransformer Fit(IDataView input)
+    public override ITransformer Fit(IDataView input)
     {
         var dataExcerpt = input.GetDataExcerpt();
         var spec =
@@ -44,8 +38,8 @@ public class DecisionTreeBinaryTrainer : IEstimator<ITransformer>
         return mlContext.Transforms
             .CustomMapping(
                 mapping
-                    .GetMapping<BinaryClassificationInputSchema,
-                        BinaryClassificationOutputSchema>(), null).Fit(input);
+                    .GetMapping<BinaryClassificationInput,
+                        BinaryClassificationOutput>(), null).Fit(input);
     }
 }
 
@@ -65,7 +59,7 @@ public class DecisionTreeMapping(
     {
         var example = ToExample(arg1);
         var prediction = learner.Predict(example);
-        if (arg2 is not ICustomMappingBinaryClassificationOutputSchema output)
+        if (arg2 is not IBinaryClassificationOutput output)
             return;
         output.PredictedLabel =
             uint.Parse(prediction, CultureInfo.InvariantCulture);
@@ -81,7 +75,7 @@ public class DecisionTreeMapping(
 
     private IExample ToExample<TSrc>(TSrc src) where TSrc : class, new()
     {
-        if (src is not ICustomMappingInputSchema input)
+        if (src is not ICustomMappingInput input)
             throw new ArgumentException(
                 "The input is not of type ICustomMappingInputSchema");
         var features = input.Features;
