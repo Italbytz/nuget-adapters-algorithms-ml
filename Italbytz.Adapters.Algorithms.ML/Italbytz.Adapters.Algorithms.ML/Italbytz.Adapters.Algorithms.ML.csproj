@@ -22,6 +22,6 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Italbytz.Adapters.Algorithms.AI" Version="9.6.1"/>
-        <PackageReference Include="Italbytz.ML" Version="9.4.0"/>
+        <PackageReference Include="Italbytz.ML" Version="9.5.1" />
     </ItemGroup>
 </Project>

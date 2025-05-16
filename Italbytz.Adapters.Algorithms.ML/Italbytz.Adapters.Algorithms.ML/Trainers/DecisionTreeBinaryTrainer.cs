@@ -4,6 +4,7 @@ using System.Globalization;
 using Italbytz.AI.Learning;
 using Italbytz.AI.Learning.Framework;
 using Microsoft.ML;
+using Microsoft.ML.Data;
 using Microsoft.ML.Transforms;
 
 namespace Italbytz.ML.Trainers;
@@ -54,18 +55,40 @@ public class DecisionTreeMapping(
     {
         var example = ToExample(arg1);
         var prediction = learner.Predict(example);
-        if (arg2 is not IBinaryClassificationOutput output)
-            return;
-        output.PredictedLabel =
-            uint.Parse(prediction, CultureInfo.InvariantCulture);
-        output.Score =
-            prediction.Equals("1", StringComparison.OrdinalIgnoreCase)
-                ? 0f
-                : 1f;
-        output.Probability =
-            prediction.Equals("1", StringComparison.OrdinalIgnoreCase)
-                ? 0f
-                : 1f;
+        switch (arg2)
+        {
+            case IBinaryClassificationOutput output:
+                output.PredictedLabel =
+                    uint.Parse(prediction, CultureInfo.InvariantCulture);
+                output.Score =
+                    prediction.Equals("1", StringComparison.OrdinalIgnoreCase)
+                        ? 0f
+                        : 1f;
+                output.Probability =
+                    prediction.Equals("1", StringComparison.OrdinalIgnoreCase)
+                        ? 0f
+                        : 1f;
+                break;
+            case IMulticlassClassificationOutput multiclassOutput:
+            {
+                var classes = dataExcerpt.UniqueLabelValues.Length;
+                var predictedLabel = uint.Parse(prediction,
+                    CultureInfo.InvariantCulture);
+                multiclassOutput.PredictedLabel = predictedLabel;
+                var scores = new float[classes];
+                scores[predictedLabel - 1] = 1f;
+                var probabilities = new float[classes];
+                probabilities[predictedLabel - 1] = 1f;
+                multiclassOutput.Score =
+                    new VBuffer<float>(scores.Length, scores);
+                multiclassOutput.Probability =
+                    new VBuffer<float>(probabilities.Length, probabilities);
+                break;
+            }
+            default:
+                throw new ArgumentException(
+                    "The destination is not of type IBinaryClassificationOutput or IMulticlassClassificationOutput");
+        }
     }
 
     private IExample ToExample<TSrc>(TSrc src) where TSrc : class, new()

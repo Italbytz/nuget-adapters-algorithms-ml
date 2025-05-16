@@ -29,7 +29,7 @@ public class DecisionTreeMulticlassTrainerTest
         var lookupIdvMap =
             mlContext.Data.LoadFromEnumerable(lookupData);
         // trainer and pipeline
-        var trainer = new DecisionTreeBinaryTrainer();
+        var trainer = new DecisionTreeMulticlassTrainer();
         var pipeline = GetCarEvaluationPipeline(trainer, lookupIdvMap);
         var model = pipeline.Fit(data);
         var transformedData = model.Transform(data);
