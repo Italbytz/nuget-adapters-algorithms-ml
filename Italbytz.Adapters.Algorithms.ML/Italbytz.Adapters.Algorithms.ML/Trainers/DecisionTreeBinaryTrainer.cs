@@ -4,6 +4,7 @@ using System.Globalization;
 using Italbytz.AI.Learning;
 using Italbytz.AI.Learning.Framework;
 using Microsoft.ML;
+using Microsoft.ML.Transforms;
 
 namespace Italbytz.ML.Trainers;
 
@@ -12,34 +13,28 @@ public class DecisionTreeBinaryTrainer : DecisionTreeTrainer<
     BinaryClassificationInput,
     BinaryClassificationOutput>
 {
-    /// <inheritdoc />
-    public override SchemaShape GetOutputSchema(SchemaShape inputSchema)
+    private IDataExcerpt? _dataExcerpt;
+    private IDataSetSpecification? _spec;
+
+    protected override void PrepareForFit(IDataView input)
     {
-        var mlContext = ThreadSafeMLContext.LocalMLContext;
-        var mapping = new DecisionTreeMapping(_learner, null, null);
-        return mlContext.Transforms
-            .CustomMapping(
-                mapping
-                    .GetMapping<BinaryClassificationInput,
-                        BinaryClassificationOutput>(), null)
-            .GetOutputSchema(inputSchema);
+        _dataExcerpt = input.GetDataExcerpt();
+        _spec = _dataExcerpt.GetDataSetSpecification();
+        var dataSet = _dataExcerpt.GetDataSet(_spec);
+        _learner.Train(dataSet);
     }
 
-    /// <inheritdoc />
-    public override ITransformer Fit(IDataView input)
+    protected override
+        CustomMappingEstimator<BinaryClassificationInput,
+            BinaryClassificationOutput> GetCustomMappingEstimator()
     {
-        var dataExcerpt = input.GetDataExcerpt();
-        var spec =
-            dataExcerpt.GetDataSetSpecification();
-        var dataSet = dataExcerpt.GetDataSet(spec);
-        _learner.Train(dataSet);
         var mlContext = ThreadSafeMLContext.LocalMLContext;
-        var mapping = new DecisionTreeMapping(_learner, dataExcerpt, spec);
+        var mapping = new DecisionTreeMapping(_learner, _dataExcerpt, _spec);
         return mlContext.Transforms
             .CustomMapping(
                 mapping
                     .GetMapping<BinaryClassificationInput,
-                        BinaryClassificationOutput>(), null).Fit(input);
+                        BinaryClassificationOutput>(), null);
     }
 }
 
