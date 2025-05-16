@@ -25,8 +25,16 @@ public class
         var labels = input
             .GetColumn<float>(DefaultColumnNames.Label)
             .ToList();
-        /*var parameters = MathNet.Numerics.Fit.MultiDim(features.ToArray(),
-            labels.ToArray(), true);*/
+        var parametersInt = MathNet.Numerics.Fit.MultiDim(
+            features.Select(feature =>
+                feature.Select(entry => (double)entry).ToArray()).ToArray(),
+            labels.Select(label => (double)label).ToArray(), true);
+        Console.WriteLine($"Para: {string.Join(", ", parametersInt)}");
+        var parametersNoInt = MathNet.Numerics.Fit.MultiDim(
+            features.Select(feature =>
+                feature.Select(entry => (double)entry).ToArray()).ToArray(),
+            labels.Select(label => (double)label).ToArray());
+        Console.WriteLine($"Para: {string.Join(", ", parametersNoInt)}");
     }
 
     protected override
