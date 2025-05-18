@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Microsoft.ML;
 using Microsoft.ML.Data;
@@ -11,6 +10,8 @@ public class
     LeastSquaresTrainer : CustomTrainer<BinaryClassificationInput,
     RegressionOutput>
 {
+    private double[]? _parameters;
+
     protected override void PrepareForFit(IDataView input)
     {
         /*var dataExcerpt = input.GetDataExcerpt();
@@ -25,16 +26,11 @@ public class
         var labels = input
             .GetColumn<float>(DefaultColumnNames.Label)
             .ToList();
-        var parametersInt = MathNet.Numerics.Fit.MultiDim(
-            features.Select(feature =>
-                feature.Select(entry => (double)entry).ToArray()).ToArray(),
-            labels.Select(label => (double)label).ToArray(), true);
-        Console.WriteLine($"Para: {string.Join(", ", parametersInt)}");
-        var parametersNoInt = MathNet.Numerics.Fit.MultiDim(
-            features.Select(feature =>
-                feature.Select(entry => (double)entry).ToArray()).ToArray(),
-            labels.Select(label => (double)label).ToArray());
-        Console.WriteLine($"Para: {string.Join(", ", parametersNoInt)}");
+        var x = features.Select(feature =>
+            feature.Select(entry => (double)entry).ToArray()).ToArray();
+        var y = labels.Select(label => (double)label).ToArray();
+        _parameters = MathNet.Numerics.Fit.MultiDim(x
+            , y, true);
     }
 
     protected override
@@ -42,25 +38,11 @@ public class
         GetCustomMappingEstimator()
     {
         var mlContext = ThreadSafeMLContext.LocalMLContext;
-        var mapping = new LeastSquaresMapping();
+        var mapping = new LeastSquaresMapping(_parameters);
         return mlContext.Transforms
             .CustomMapping(
                 mapping
                     .GetMapping<BinaryClassificationInput,
                         RegressionOutput>(), null);
-    }
-}
-
-public class LeastSquaresMapping
-{
-    public Action<TSrc, TDst> GetMapping<TSrc, TDst>()
-        where TSrc : class, new() where TDst : class, new()
-    {
-        return Map<TSrc, TDst>;
-    }
-
-    private void Map<TSrc, TDst>(TSrc arg1, TDst arg2)
-        where TSrc : class, new() where TDst : class, new()
-    {
     }
 }
