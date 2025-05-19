@@ -4,8 +4,8 @@ using Italbytz.AI.Learning.Learners;
 namespace Italbytz.ML.Trainers;
 
 public abstract class
-    DecisionTreeTrainer<TInput, TOutput> : CustomTrainer<TInput, TOutput>
-    where TOutput : class, new() where TInput : class, new()
+    DecisionTreeTrainer<TOutput> : CustomClassificationTrainer<TOutput>
+    where TOutput : class, new()
 {
     protected readonly ILearner _learner;
 

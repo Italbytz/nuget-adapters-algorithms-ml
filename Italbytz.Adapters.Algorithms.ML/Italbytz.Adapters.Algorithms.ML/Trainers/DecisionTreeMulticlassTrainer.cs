@@ -5,7 +5,6 @@ using Microsoft.ML.Transforms;
 namespace Italbytz.ML.Trainers;
 
 public class DecisionTreeMulticlassTrainer<TOutput> : DecisionTreeTrainer<
-    MulticlassClassificationInput,
     TOutput> where TOutput : class, new()
 {
     private IDataExcerpt? _dataExcerpt;
@@ -20,7 +19,7 @@ public class DecisionTreeMulticlassTrainer<TOutput> : DecisionTreeTrainer<
     }
 
     protected override
-        CustomMappingEstimator<MulticlassClassificationInput,
+        CustomMappingEstimator<ClassificationInput,
             TOutput> GetCustomMappingEstimator()
     {
         var mlContext = ThreadSafeMLContext.LocalMLContext;
@@ -28,7 +27,7 @@ public class DecisionTreeMulticlassTrainer<TOutput> : DecisionTreeTrainer<
         return mlContext.Transforms
             .CustomMapping(
                 mapping
-                    .GetMapping<MulticlassClassificationInput,
+                    .GetMapping<ClassificationInput,
                         TOutput>(), null);
     }
 }

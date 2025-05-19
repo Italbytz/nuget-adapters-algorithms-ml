@@ -6,7 +6,6 @@ namespace Italbytz.ML.Trainers;
 
 /// <inheritdoc />
 public class DecisionTreeBinaryTrainer : DecisionTreeTrainer<
-    BinaryClassificationInput,
     BinaryClassificationOutput>
 {
     private IDataExcerpt? _dataExcerpt;
@@ -21,15 +20,15 @@ public class DecisionTreeBinaryTrainer : DecisionTreeTrainer<
     }
 
     protected override
-        CustomMappingEstimator<BinaryClassificationInput,
-            BinaryClassificationOutput> GetCustomMappingEstimator()
+        CustomMappingEstimator<ClassificationInput, BinaryClassificationOutput>
+        GetCustomMappingEstimator()
     {
         var mlContext = ThreadSafeMLContext.LocalMLContext;
         var mapping = new DecisionTreeMapping(_learner, _dataExcerpt, _spec);
         return mlContext.Transforms
             .CustomMapping(
                 mapping
-                    .GetMapping<BinaryClassificationInput,
+                    .GetMapping<ClassificationInput,
                         BinaryClassificationOutput>(), null);
     }
 }

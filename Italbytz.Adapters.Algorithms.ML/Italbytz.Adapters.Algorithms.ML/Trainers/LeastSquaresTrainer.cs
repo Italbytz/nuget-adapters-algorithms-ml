@@ -5,10 +5,8 @@ using Microsoft.ML.Transforms;
 
 namespace Italbytz.ML.Trainers;
 
-// ToDo: Replace BinaryClassificationInput with the actual input type for your model
 public class
-    LeastSquaresTrainer : CustomTrainer<BinaryClassificationInput,
-    RegressionOutput>
+    LeastSquaresTrainer : CustomRegressionTrainer
 {
     private double[]? _parameters;
 
@@ -34,7 +32,7 @@ public class
     }
 
     protected override
-        CustomMappingEstimator<BinaryClassificationInput, RegressionOutput>
+        CustomMappingEstimator<RegressionInput, RegressionOutput>
         GetCustomMappingEstimator()
     {
         var mlContext = ThreadSafeMLContext.LocalMLContext;
@@ -42,7 +40,7 @@ public class
         return mlContext.Transforms
             .CustomMapping(
                 mapping
-                    .GetMapping<BinaryClassificationInput,
+                    .GetMapping<RegressionInput,
                         RegressionOutput>(), null);
     }
 }
