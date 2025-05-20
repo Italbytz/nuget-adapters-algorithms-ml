@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.ML;
 using Microsoft.ML.Data;
-using Microsoft.ML.Transforms;
 
 namespace Italbytz.ML.Trainers;
 
@@ -10,6 +9,7 @@ public class
 {
     private double[]? _parameters;
 
+    /// <inheritdoc />
     protected override void PrepareForFit(IDataView input)
     {
         /*var dataExcerpt = input.GetDataExcerpt();
@@ -31,16 +31,13 @@ public class
             , y, true);
     }
 
-    protected override
-        CustomMappingEstimator<RegressionInput, RegressionOutput>
-        GetCustomMappingEstimator()
+    /// <inheritdoc />
+    protected override void Map(RegressionInput input, RegressionOutput output)
     {
-        var mlContext = ThreadSafeMLContext.LocalMLContext;
-        var mapping = new LeastSquaresMapping(_parameters);
-        return mlContext.Transforms
-            .CustomMapping(
-                mapping
-                    .GetMapping<RegressionInput,
-                        RegressionOutput>(), null);
+        var score = _parameters![0];
+        var features = input.Features;
+        for (var i = 1; i < _parameters.Length; i++)
+            score += _parameters[i] * features[i - 1];
+        output.Score = (float)score;
     }
 }
