@@ -1,3 +1,4 @@
+using Italbytz.ML.Data;
 using Italbytz.ML.Tests.Data.CarEvaluation;
 using Italbytz.ML.Tests.Data.NationalPoll;
 using Italbytz.ML.Trainers;
@@ -41,6 +42,8 @@ public class DecisionTreeMulticlassTrainerTest
         Assert.AreEqual(0.94537, metrics.MicroAccuracy, 0.0001);
         Assert.AreEqual(1.88657, metrics.LogLoss, 0.0001);
         Assert.AreEqual(-0.86595, metrics.LogLossReduction, 0.0001);
+        Console.WriteLine(
+            metrics.ConfusionMatrix.SklearnScript("npha_confusion_matrix.py"));
     }
 
 
